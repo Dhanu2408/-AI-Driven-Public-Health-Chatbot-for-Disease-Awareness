@@ -1,0 +1,77 @@
+CREATE DATABASE public_health_chatbot;
+
+USE public_health_chatbot;
+
+-- Users Table
+CREATE TABLE users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('user','admin') DEFAULT 'user',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Diseases Table
+CREATE TABLE diseases (
+    disease_id INT AUTO_INCREMENT PRIMARY KEY,
+    disease_name VARCHAR(100) NOT NULL,
+    symptoms TEXT,
+    causes TEXT,
+    prevention TEXT,
+    treatment TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Chat History Table
+CREATE TABLE chat_history (
+    chat_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    user_query TEXT NOT NULL,
+    bot_response TEXT NOT NULL,
+    chat_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+-- Health Tips Table
+CREATE TABLE health_tips (
+    tip_id INT AUTO_INCREMENT PRIMARY KEY,
+    tip_title VARCHAR(200) NOT NULL,
+    tip_description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Emergency Contacts Table
+CREATE TABLE emergency_contacts (
+    contact_id INT AUTO_INCREMENT PRIMARY KEY,
+    service_name VARCHAR(100) NOT NULL,
+    phone_number VARCHAR(20) NOT NULL,
+    location VARCHAR(150)
+);
+
+-- Disease Awareness Articles
+CREATE TABLE articles (
+    article_id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    content TEXT NOT NULL,
+    disease_id INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (disease_id) REFERENCES diseases(disease_id)
+);
+
+-- User Feedback Table
+CREATE TABLE feedback (
+    feedback_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    rating INT CHECK (rating BETWEEN 1 AND 5),
+    comments TEXT,
+    submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+-- Frequently Asked Questions
+CREATE TABLE faq (
+    faq_id INT AUTO_INCREMENT PRIMARY KEY,
+    question TEXT NOT NULL,
+    answer TEXT NOT NULL
+);
