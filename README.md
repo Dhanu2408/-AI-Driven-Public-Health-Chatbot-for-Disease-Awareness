@@ -403,3 +403,91 @@ The Feedback table stores user opinions and ratings about chatbot responses. It 
 
 The Health Alert table stores disease-related alerts and notifications. It contains Alert ID, Disease ID, Alert Message, Alert Date, and Severity Level. Disease ID acts as a foreign key connecting alerts to the corresponding disease.
 
+                                                     UI Wireframe Design Prompt
+
+Title: AI-Driven Public Health Chatbot for Disease Awareness
+
+Design Style: Clean, modern healthcare dashboard with blue and green color theme, mobile-responsive layout.
+
+Screen 1: Home Page
+Header with:
+Project Logo
+Project Name
+Navigation Menu (Home, Disease Info, Chatbot, Awareness, Contact)
+Hero Section:
+Welcome message: "AI-Driven Public Health Chatbot for Disease Awareness"
+Short description about disease awareness and public health education
+"Start Chat" button
+Features Section:
+Disease Information
+Symptom Awareness
+Health Tips
+AI Chat Assistance
+Footer:
+Contact Information
+Privacy Policy
+Social Media Icons
+Screen 2: User Login / Registration
+Login Form
+Email
+Password
+Login Button
+Registration Form
+Name
+Email
+Mobile Number
+Password
+Register Button
+Screen 3: AI Chatbot Interface
+Header:
+Chatbot Name
+User Profile Icon
+Left Sidebar:
+Chat History
+Saved Conversations
+Disease Categories
+Main Chat Area:
+User Messages
+AI Responses
+Typing Indicator
+Bottom Input Area:
+Message Text Box
+Voice Input Button
+Send Button
+Screen 4: Disease Awareness Module
+Search Bar
+Disease Categories:
+COVID-19
+Dengue
+Diabetes
+Hypertension
+Malaria
+Information Card:
+Disease Name
+Symptoms
+Causes
+Prevention
+Treatment Suggestions
+Screen 5: Health Tips Dashboard
+Daily Health Tips Section
+Preventive Measures Cards
+Nutrition Recommendations
+Exercise Recommendations
+Vaccination Awareness Section
+Screen 6: Admin Dashboard
+Sidebar:
+Dashboard
+Manage Diseases
+Manage Awareness Content
+User Management
+Reports
+Main Dashboard:
+Total Users
+Total Chat Sessions
+Disease Searches
+Awareness Campaign Statistics
+Charts:
+User Activity Graph
+Disease Query Trends
+Monthly Usage Report
+
