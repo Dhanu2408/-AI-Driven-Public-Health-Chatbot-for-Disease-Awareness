@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard – AI Health Chatbot</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="dash-page">
+
+  <div class="sidebar">
+    <div class="sidebar-logo">🏥 AI Health Chatbot</div>
+    <nav>
+      <a href="dashboard.html" class="nav-item active">🏠 Dashboard</a>
+      <a href="#" class="nav-item">💬 AI Chat</a>
+      <a href="#" class="nav-item">🦠 Diseases</a>
+      <a href="#" class="nav-item">💡 Health Tips</a>
+      <a href="#" class="nav-item">👤 Profile</a>
+      <a href="login.html" class="nav-item">🚪 Logout</a>
+    </nav>
+  </div>
+
+  <div class="main-content">
+    <div class="topbar">
+      <h2>Welcome back, Dhanu 👋</h2>
+      <div class="user-info">
+        🔔 &nbsp;<span class="avatar">DH</span>
+      </div>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <p class="metric-label">Chats today</p>
+        <p class="metric-value">3</p>
+      </div>
+      <div class="metric-card">
+        <p class="metric-label">Diseases checked</p>
+        <p class="metric-value">12</p>
+      </div>
+      <div class="metric-card">
+        <p class="metric-label">Tips read</p>
+        <p class="metric-value">7</p>
+      </div>
+      <div class="metric-card">
+        <p class="metric-label">Avg. feedback</p>
+        <p class="metric-value">4.5 ⭐</p>
+      </div>
+    </div>
+
+    <div class="widget-row">
+      <div class="widget-card">
+        <h3>💬 AI Chat</h3>
+        <button class="btn-primary"
+          style="width:100%;margin-bottom:12px;">
+          + Start New Chat
+        </button>
+        <p class="section-label">Recent Chats</p>
+        <ul class="recent-list">
+          <li>What are dengue symptoms?</li>
+          <li>How to prevent malaria?</li>
+          <li>COVID-19 prevention tips</li>
+        </ul>
+      </div>
+
+      <div class="widget-card">
+        <h3>🦠 Disease Tracker</h3>
+        <div class="disease-row">
+          <span>Dengue</span>
+          <span class="tag warn">Moderate Risk</span>
+        </div>
+        <div class="disease-row">
+          <span>Malaria</span>
+          <span class="tag alert">High Alert</span>
+        </div>
+        <div class="disease-row">
+          <span>COVID-19</span>
+          <span class="tag safe">Low Risk</span>
+        </div>
+        <div class="disease-row">
+          <span>Diabetes</span>
+          <span class="tag warn">Monitor</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
