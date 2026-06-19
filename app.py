@@ -1,12 +1,8 @@
 from flask import Flask, render_template, request, jsonify, redirect, url_for
 
 app = Flask(__name__, template_folder='.')  
-# Note: Template folder '.' nu potruken, yenna unga screenshots padi 
-# HTML files ellaame main repository open layout-lae iruku.
 
-# ----------------------------------------------------
 # Mock Knowledge Base for Public Health Awareness
-# ----------------------------------------------------
 HEALTH_KNOWLEDGE_BASE = {
     "fever": "Fever could indicate an infection like Flu, Typhoid, or Dengue. Rest well, stay hydrated with fluids/ORS, and monitor temperature. If it exceeds 102°F, consult a physician.",
     "fever with joint pain": "High fever accompanied by severe joint pain is a primary indicator of Chikungunya or Dengue. Avoid self-medication, eliminate stagnant water around your home to prevent mosquitoes, and get a blood test done.",
@@ -18,44 +14,28 @@ HEALTH_KNOWLEDGE_BASE = {
 
 DEFAULT_RESPONSE = "Thank you for detailing your symptoms. While I cannot diagnose you definitively, I recommend monitoring your symptoms closely. Ensure proper hydration and sanitization. If symptoms persist or worsen, please visit your nearest public primary health care center (PHC)."
 
-
-# ----------------------------------------------------
-# Route Enpoints Configurations
-# ----------------------------------------------------
-
 @app.route('/')
 def home():
-    # Application startup redirects directly to login interface
     return redirect(url_for('login'))
-
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        # Basic mockup verification for presentation workflow
-        # Future scope: Connect with sqlite3 database credentials check
         return redirect(url_for('dashboard'))
     return render_template('login.html')
-
 
 @app.route('/dashboard')
 def dashboard():
     return render_template('dashboard.html')
 
-
 @app.route('/chatbot')
 def chatbot():
     return render_template('chatbot.html')
-
 
 @app.route('/admin')
 def admin():
     return render_template('admin.html')
 
-
-# ----------------------------------------------------
-# Chatbot AI Logic Framework Engine Endpoint
-# ----------------------------------------------------
 @app.route('/get_response', methods=['POST'])
 def get_response():
     data = request.get_json()
@@ -64,7 +44,6 @@ def get_response():
     if not user_message:
         return jsonify({"reply": "I couldn't catch that. Could you please specify your symptoms again?"})
 
-    # Rule-Engine Mapping Logic for Symptom Awareness matching
     bot_reply = None
     for key in HEALTH_KNOWLEDGE_BASE:
         if key in user_message:
@@ -76,7 +55,5 @@ def get_response():
 
     return jsonify({"reply": bot_reply})
 
-
 if __name__ == '__main__':
-    # Running application in debug mode for seamless hot-reloads during review
     app.run(debug=True, port=5000)
