@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Dashboard – AI Health Chatbot</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="static/style.css">
 </head>
 <body class="dash-page">
 
@@ -50,8 +50,10 @@
       <div class="widget-card">
         <h3>💬 AI Chat</h3>
         <button class="btn-primary"
-          style="width:100%;margin-bottom:12px;">
-          + Start New Chat
+        style="width:100%;margin-bottom:12px;"
+        onclick="window.location.href='/chatbot'">
+    + Start New Chat
+</button>
         </button>
         <p class="section-label">Recent Chats</p>
         <ul class="recent-list">
