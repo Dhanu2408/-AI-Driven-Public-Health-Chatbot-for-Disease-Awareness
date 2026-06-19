@@ -4,293 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Public Health Chatbot</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: #f0f4f8;
-            display: flex;
-            height: 100vh;
-        }
-
-        /* Layout Structure */
-        .container {
-            display: flex;
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Sidebar Design */
-        .sidebar {
-            width: 260px;
-            background-color: #1a365d;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 20px;
-        }
-
-        .brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #2d3748;
-        }
-
-        .menu-links {
-            list-style: none;
-            margin-top: 20px;
-            flex-grow: 1;
-        }
-
-        .menu-links li a {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: #cbd5e0;
-            text-decoration: none;
-            padding: 12px;
-            border-radius: 8px;
-            transition: 0.3s;
-            margin-bottom: 8px;
-        }
-
-        .menu-links li a:hover, .menu-links li.active a {
-            background-color: #2b6cb0;
-            color: white;
-        }
-
-        .logout-btn {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: #fc8181;
-            text-decoration: none;
-            padding: 12px;
-            border-radius: 8px;
-        }
-
-        /* Main Chat Window Area */
-        .chat-area {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            background-color: #ffffff;
-        }
-
-        .chat-header {
-            padding: 20px;
-            border-bottom: 1px solid #e2e8f0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: #fff;
-        }
-
-        .bot-status h3 {
-            color: #2d3748;
-        }
-
-        .bot-status span {
-            font-size: 0.85rem;
-            color: #48bb78;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        /* Chat Messages Container */
-        .chat-messages {
-            flex-grow: 1;
-            padding: 20px;
-            overflow-y: auto;
-            background-color: #f7fafc;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .message {
-            max-width: 70%;
-            padding: 12px 16px;
-            border-radius: 12px;
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
-
-        .bot-message {
-            background-color: #e2e8f0;
-            color: #2d3748;
-            align-self: flex-start;
-            border-top-left-radius: 0;
-        }
-
-        .user-message {
-            background-color: #3182ce;
-            color: white;
-            align-self: flex-end;
-            border-top-right-radius: 0;
-        }
-
-        /* Emergency Disclaimer Alert Box */
-        .disclaimer-box {
-            background-color: #fff5f5;
-            border-left: 4px solid #e53e3e;
-            padding: 10px 15px;
-            font-size: 0.85rem;
-            color: #c53030;
-            margin-bottom: 10px;
-        }
-
-        /* Chat Input Area Form */
-        .chat-input-container {
-            padding: 20px;
-            border-top: 1px solid #e2e8f0;
-            background-color: #fff;
-        }
-
-        .input-form {
-            display: flex;
-            gap: 10px;
-        }
-
-        .input-form input {
-            flex-grow: 1;
-            padding: 14px;
-            border: 1px solid #cbd5e0;
-            border-radius: 8px;
-            outline: none;
-            font-size: 1rem;
-        }
-
-        .input-form input:focus {
-            border-color: #3182ce;
-        }
-
-        .send-btn {
-            background-color: #3182ce;
-            color: white;
-            border: none;
-            padding: 0 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.1rem;
-            transition: 0.2s;
-        }
-
-        .send-btn:hover {
-            background-color: #2b6cb0;
-        }
-    </style>
+    <link rel="stylesheet" href="static/style.css">
 </head>
-<body>
-
-    <div class="container">
-        <nav class="sidebar">
-            <div>
-                <div class="brand">
-                    <i class="fa-solid fa-robot-breastpump" style="color: #63b3ed;"></i>
-                    <span>HealthAI Bot</span>
-                </div>
-                <ul class="menu-links">
-                    <li><a href="dashboard.html"><i class="fa-solid fa-house"></i> Home Dashboard</a></li>
-                    <li class="active"><a href="chatbot.html"><i class="fa-solid fa-comments"></i> AI Consult Chat</a></li>
-                    <li><a href="admin.html"><i class="fa-solid fa-user-shield"></i> Admin Panel</a></li>
-                </ul>
+<body class="chatbot-body">
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>Public Health AI Assistant</h2>
+            <p>Describe your symptoms for awareness & advisory</p>
+        </div>
+        <div class="chat-box" id="chat-box">
+            <div class="message bot-message">
+                Hello! I am your Public Health Assistant. Please enter your symptoms (e.g., fever, cold, rash) to receive health awareness information.
             </div>
-            <a href="login.html" class="logout-btn">
-                <i class="fa-solid fa-right-from-bracket"></i> Logout
-            </a>
-        </nav>
-
-        <main class="chat-area">
-            <header class="chat-header">
-                <div class="bot-status">
-                    <h3>Public Disease Awareness Bot</h3>
-                    <span><i class="fa-solid fa-circle" style="font-size: 0.6rem;"></i> AI Assistant Online</span>
-                </div>
-                <div class="user-profile">
-                    <i class="fa-solid fa-circle-user fa-2xl" style="color: #a0aec0;"></i>
-                </div>
-            </header>
-
-            <div class="chat-messages" id="chat-box">
-                <div class="message bot-message">
-                    Hello! I am your AI Health Assistant. Please type the symptoms you or others are experiencing (e.g., Fever, Cold, Skin rashes). I can guide you with disease awareness info.
-                </div>
-            </div>
-
-            <div class="chat-input-container">
-                <div class="disclaimer-box">
-                    <strong>Disclaimer:</strong> This AI system is for educational and disease awareness purposes only. In case of severe emergency, please contact 108 or visit nearest hospital immediately.
-                </div>
-                <form class="input-form" id="chat-form">
-                    <input type="text" id="user-input" placeholder="Type your symptoms here..." autocomplete="off" required>
-                    <button type="submit" class="send-btn">
-                        <i class="fa-solid fa-paper-plane"></i>
-                    </button>
-                </form>
-            </div>
-        </main>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="user-input" placeholder="Type your symptoms here..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()">Send</button>
+        </div>
     </div>
 
     <script>
-        document.getElementById('chat-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
+        async function sendMessage() {
             const inputField = document.getElementById('user-input');
             const chatBox = document.getElementById('chat-box');
             const userText = inputField.value.trim();
-            
-            if(!userText) return;
 
-            // 1. Append User Text Message Bubble to UI screen
+            if (userText === "") return;
+
+            // 1. User Message-a Screen-la kaata
             const userDiv = document.createElement('div');
             userDiv.className = 'message user-message';
             userDiv.textContent = userText;
             chatBox.appendChild(userDiv);
             
-            // Clear input text field layout tracker box
-            inputField.value = '';
+            inputField.value = "";
             chatBox.scrollTop = chatBox.scrollHeight;
 
-            // 2. Mocking or integration pipeline trigger endpoint route request to Python app.py backend
+            // 2. Real Backend (app.py) Call
             try {
-                /*
-                Uncomment this block when your app.py endpoint is ready to receive requests!
-                
                 const response = await fetch('/get_response', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ message: userText })
                 });
+                
                 const data = await response.json();
-                const botReply = data.reply;
-                */
-
-                // Temporary Mock response for testing purpose output logic:
-                setTimeout(() => {
-                    const botDiv = document.createElement('div');
-                    botDiv.className = 'message bot-message';
-                    botDiv.textContent = "Thank you for sharing your symptoms. I am processing this keyword to fetch matching public health advisories from our secure repository database.";
-                    chatBox.appendChild(botDiv);
-                    chatBox.scrollTop = chatBox.scrollHeight;
-                }, 1000);
+                
+                const botDiv = document.createElement('div');
+                botDiv.className = 'message bot-message';
+                botDiv.textContent = data.reply;
+                chatBox.appendChild(botDiv);
+                chatBox.scrollTop = chatBox.scrollHeight;
 
             } catch (error) {
                 console.error("Error communicating with backend server:", error);
             }
-        });
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
     </script>
 </body>
 </html>
