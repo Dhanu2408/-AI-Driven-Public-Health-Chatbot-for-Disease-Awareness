@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register</title>
+  <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body class="auth-body">
+  <div class="auth-container">
+    <div class="auth-card">
+      <h2>Create Account</h2>
+      <form method="POST" action="/register">
+        <label>Full Name</label>
+        <input type="text" name="fullname" placeholder="Your full name" required>
+        
+        <label>Email Address</label>
+        <input type="email" name="email" placeholder="you@example.com" required>
+        
+        <label>Mobile Number</label>
+        <input type="tel" name="mobile" placeholder="+91 XXXXX XXXXX" required>
+        
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Create a password" required>
+        
+        <button type="submit">Create Account</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
