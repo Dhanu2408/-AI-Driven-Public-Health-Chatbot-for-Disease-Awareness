@@ -14,53 +14,77 @@
     <p class="sub">Disease awareness at your fingertips</p>
 
     <div class="login-card">
+
       <div class="form-tabs">
-        <button class="form-tab active"
+        <button type="button" class="form-tab active"
           onclick="toggleAuth('login', this)">Login</button>
-        <button class="form-tab"
+
+        <button type="button" class="form-tab"
           onclick="toggleAuth('register', this)">Register</button>
       </div>
 
+      <!-- LOGIN FORM -->
       <div id="login-form">
-        <div class="form-group">
-          <label>Email address</label>
-          <input type="email" placeholder="you@example.com" />
-        </div>
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" placeholder="Enter your password" />
-        </div>
-        <button class="btn-primary"
-          onclick="window.location='/dashboard'">
-          Login
-        </button>
+
+        <form method="POST" action="/login">
+
+          <div class="form-group">
+            <label>Email address</label>
+            <input type="email"
+                   name="email"
+                   placeholder="you@example.com"
+                   required />
+          </div>
+
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password"
+                   name="password"
+                   placeholder="Enter your password"
+                   required />
+          </div>
+
+          <button type="submit" class="btn-primary">
+            Login
+          </button>
+
+        </form>
+
         <p class="form-hint">
           Forgot password? <a href="#">Reset here</a>
         </p>
+
       </div>
 
+      <!-- REGISTER FORM -->
       <div id="register-form" style="display:none;">
+
         <div class="form-group">
           <label>Full name</label>
           <input type="text" placeholder="Your full name" />
         </div>
+
         <div class="form-group">
           <label>Email address</label>
           <input type="email" placeholder="you@example.com" />
         </div>
+
         <div class="form-group">
           <label>Mobile number</label>
           <input type="tel" placeholder="+91 XXXXX XXXXX" />
         </div>
+
         <div class="form-group">
           <label>Password</label>
           <input type="password" placeholder="Create a password" />
         </div>
-        <button class="btn-primary"
-          onclick="window.location='/dashboard'">
+
+        <button type="button" class="btn-primary">
           Create Account
         </button>
+
       </div>
+
     </div>
   </div>
 
@@ -68,7 +92,9 @@
     function toggleAuth(mode, btn) {
       document.querySelectorAll('.form-tab')
         .forEach(t => t.classList.remove('active'));
+
       btn.classList.add('active');
+
       if (mode === 'login') {
         document.getElementById('login-form').style.display = 'block';
         document.getElementById('register-form').style.display = 'none';
@@ -78,5 +104,6 @@
       }
     }
   </script>
+
 </body>
 </html>
