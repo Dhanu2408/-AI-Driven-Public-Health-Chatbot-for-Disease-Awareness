@@ -1,114 +1,132 @@
+from flask import Flask, render_template, request, redirect, session, jsonify
+
 import sqlite3
-from flask import Flask, render_template, request, jsonify, redirect, url_for
+import os
 
-# Database Connection
-conn = sqlite3.connect('healthbot.db', check_same_thread=False)
-cursor = conn.cursor()
+app = Flask(__name__)
+app.secret_key = "healthbot_secret_key"
 
-cursor.execute('''
-CREATE TABLE IF NOT EXISTS feedback (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT,
-    email TEXT,
-    feedback TEXT
-)
-''')
-conn.commit()
+DB_NAME = "healthbot.db"
 
-# Repository Function
-def save_feedback(name, email, feedback):
-    cursor.execute(
-        "INSERT INTO feedback (name, email, feedback) VALUES (?, ?, ?)",
-        (name, email, feedback)
-    )
-    conn.commit()
 
-app = Flask(__name__, template_folder='.')
+def db():
+    conn = sqlite3.connect(DB_NAME)
+    conn.row_factory = sqlite3.Row
+    return conn
 
-# Mock Knowledge Base for Public Health Awareness
-HEALTH_KNOWLEDGE_BASE = {
-    "fever": "Fever could indicate an infection like Flu, Typhoid, or Dengue. Rest well, stay hydrated with fluids/ORS, and monitor temperature. If it exceeds 102°F, consult a physician.",
 
-    "fever with joint pain": "High fever accompanied by severe joint pain is a primary indicator of Chikungunya or Dengue. Avoid self-medication, eliminate stagnant water around your home to prevent mosquitoes, and get a blood test done.",
+def init_db():
+    with db() as conn:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS users(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                email TEXT UNIQUE NOT NULL,
+                password TEXT NOT NULL
+            )
+        """)
 
-    "cold": "Common cold is viral. Drink warm fluids, practice steam inhalation, and maintain hand hygiene to avoid spreading it to others.",
 
-    "cough": "Persistent dry cough or cough with mucus could be a sign of respiratory viral infections. Ensure good ventilation, take steam, and seek advice if breathing issues occur.",
+init_db()
 
-    "skin rashes": "Rashes can be due to allergies, viral infections, or vector-borne conditions. Keep the skin clean and dry. Avoid scratching to prevent secondary skin infections.",
 
-    "dengue": "Dengue awareness: Caused by Aedes mosquitoes. Look out for high fever, severe headache, rash, and muscle pain. Drink plenty of water and seek immediate medical evaluation for platelet counts.",
+# ---------------- CHAT LOGIC ----------------
+def get_reply(msg):
+    msg = msg.lower()
 
-    "headache": "Headache may occur due to stress, dehydration, or infection. Drink water and take adequate rest.",
+    if "fever" in msg:
+        return "Drink plenty of fluids and rest. If fever is high or lasts more than 2 days, consult a doctor."
+    elif "cold" in msg:
+        return "Steam inhalation helps. Avoid cold drinks and get enough rest."
+    elif "cough" in msg:
+        return "Warm water with honey is recommended. See a doctor if it persists beyond a week."
+    elif "dengue" in msg:
+        return "Go to the hospital immediately for a blood test if you suspect dengue."
+    elif "headache" in msg:
+        return "Rest in a quiet, dark room and stay hydrated. Consult a doctor if it's severe or frequent."
+    else:
+        return "I'm not fully sure about that. Please consult a doctor for a proper diagnosis."
 
-    "vomiting": "Vomiting may be caused by food poisoning or infection. Stay hydrated and consult a doctor if severe.",
 
-    "diarrhea": "Diarrhea can lead to dehydration. Drink ORS and maintain hygiene.",
-
-    "malaria": "Malaria is spread by mosquitoes. Symptoms include fever, chills, and sweating. Seek medical care."
-}
-
-DEFAULT_RESPONSE = "Thank you for detailing your symptoms. While I cannot diagnose you definitively, I recommend monitoring your symptoms closely. Ensure proper hydration and sanitization. If symptoms persist or worsen, please visit your nearest public primary health care center (PHC)."
-
-@app.route('/')
+# ---------------- ROUTES ----------------
+@app.route("/")
 def home():
-    return redirect(url_for('login'))
+    return redirect("/login")
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
 
-        email = request.form.get('email')
-        password = request.form.get('password')
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    error = None
+    if request.method == "POST":
+        name = request.form.get("name", "").strip()
+        email = request.form.get("email", "").strip()
+        password = request.form.get("password", "")
 
-        if email == "admin@gmail.com" and password == "1234":
-            return redirect(url_for('dashboard'))
+        if not name or not email or not password:
+            error = "Please fill in all fields."
         else:
-            return "invalid email or password"
+            try:
+                with db() as conn:
+                    conn.execute(
+                        "INSERT INTO users(name, email, password) VALUES(?,?,?)",
+                        (name, email, password),
+                    )
+                return redirect("/login")
+            except sqlite3.IntegrityError:
+                error = "An account with this email already exists."
 
-    return render_template('login.html')
+    return render_template("register.html", error=error)
 
-@app.route('/dashboard')
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    error = None
+    if request.method == "POST":
+        email = request.form.get("email", "").strip()
+        password = request.form.get("password", "")
+
+        with db() as conn:
+            user = conn.execute(
+                "SELECT * FROM users WHERE email=? AND password=?",
+                (email, password),
+            ).fetchone()
+
+        if user:
+            session["user"] = email
+            session["name"] = user["name"]
+            return redirect("/dashboard")
+        error = "Invalid email or password."
+
+    return render_template("login.html", error=error)
+
+
+@app.route("/dashboard")
 def dashboard():
-    return render_template('dashboard.html')
+    if "user" not in session:
+        return redirect("/login")
+    return render_template("dashboard.html", name=session.get("name", ""))
 
-@app.route('/chatbot')
+
+@app.route("/chatbot")
 def chatbot():
-    return render_template('chatbot.html')
+    if "user" not in session:
+        return redirect("/login")
+    return render_template("chatbot.html", name=session.get("name", ""))
 
-@app.route('/admin')
-def admin():
-    return render_template('admin.html')
 
-# REST API Endpoint
-@app.route('/api/health', methods=['GET'])
-def health_api():
-    return jsonify({
-        "status": "success",
-        "message": "AI Public Health Chatbot API Working"
-    })
+@app.route("/ask", methods=["POST"])
+def ask():
+    if "user" not in session:
+        return jsonify({"reply": "Please log in first."}), 401
+    data = request.json.get("msg", "")
+    return jsonify({"reply": get_reply(data)})
 
-@app.route('/get_response', methods=['POST'])
-def get_response():
-    data = request.get_json()
-    user_message = data.get('message', '').lower().strip()
 
-    if not user_message:
-        return jsonify({
-            "reply": "I couldn't catch that. Could you please specify your symptoms again?"
-        })
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/login")
 
-    bot_reply = None
 
-    for key in HEALTH_KNOWLEDGE_BASE:
-        if key in user_message:
-            bot_reply = HEALTH_KNOWLEDGE_BASE[key]
-            break
-
-    if not bot_reply:
-        bot_reply = DEFAULT_RESPONSE
-
-    return jsonify({"reply": bot_reply})
-
-if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+if __name__ == "__main__":
+    app.run(debug=True)
