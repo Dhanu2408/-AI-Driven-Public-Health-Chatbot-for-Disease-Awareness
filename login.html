@@ -1,109 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login – AI Health Chatbot</title>
-  <link rel="stylesheet" href="static/style.css">
+<meta charset="UTF-8">
+<title>Login - AI Health Chatbot</title>
+<link rel="stylesheet" href="/static/css/style.css">
 </head>
-<body class="login-page">
+<body>
 
-  <div class="login-wrapper">
-    <div class="login-logo">💊</div>
-    <h1>AI Public Health Chatbot</h1>
-    <p class="sub">Disease awareness at your fingertips</p>
+<div class="logo"></div>
+<h1 class="title">AI Public Health Chatbot</h1>
+<p class="tagline">Disease awareness at your fingertips</p>
 
-    <div class="login-card">
-
-      <div class="form-tabs">
-        <button type="button" class="form-tab active"
-          onclick="toggleAuth('login', this)">Login</button>
-
-        <button type="button" class="form-tab"
-          onclick="toggleAuth('register', this)">Register</button>
-      </div>
-
-      <!-- LOGIN FORM -->
-      <div id="login-form">
-
-        <form method="POST" action="/login">
-
-          <div class="form-group">
-            <label>Email address</label>
-            <input type="email"
-                   name="email"
-                   placeholder="you@example.com"
-                   required />
-          </div>
-
-          <div class="form-group">
-            <label>Password</label>
-            <input type="password"
-                   name="password"
-                   placeholder="Enter your password"
-                   required />
-          </div>
-
-          <button type="submit" class="btn-primary">
-            Login
-          </button>
-
-        </form>
-
-        <p class="form-hint">
-          Forgot password? <a href="#">Reset here</a>
-        </p>
-
-      </div>
-
-      <!-- REGISTER FORM -->
-      <div id="register-form" style="display:none;">
-
-        <div class="form-group">
-          <label>Full name</label>
-          <input type="text" placeholder="Your full name" />
-        </div>
-
-        <div class="form-group">
-          <label>Email address</label>
-          <input type="email" placeholder="you@example.com" />
-        </div>
-
-        <div class="form-group">
-          <label>Mobile number</label>
-          <input type="tel" placeholder="+91 XXXXX XXXXX" />
-        </div>
-
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" placeholder="Create a password" />
-        </div>
-
-        <button type="button" class="btn-primary">
-          Create Account
-        </button>
-
-      </div>
-
+<div class="card">
+    <div class="tabs">
+        <a href="/login" class="active">Login</a>
+        <a href="/register">Register</a>
     </div>
-  </div>
 
-  <script>
-    function toggleAuth(mode, btn) {
-      document.querySelectorAll('.form-tab')
-        .forEach(t => t.classList.remove('active'));
+    <form method="POST">
+        <label>Email address</label>
+        <input type="email" name="email" placeholder="you@example.com" required>
 
-      btn.classList.add('active');
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Enter your password" required>
 
-      if (mode === 'login') {
-        document.getElementById('login-form').style.display = 'block';
-        document.getElementById('register-form').style.display = 'none';
-      } else {
-        document.getElementById('login-form').style.display = 'none';
-        document.getElementById('register-form').style.display = 'block';
-      }
-    }
-  </script>
+        <button type="submit" class="btn">Login</button>
+    </form>
+
+    {% if error %}
+    <div class="error">{{ error }}</div>
+    {% endif %}
+
+    <p class="footer-link">Don't have an account? <a href="/register">Register</a></p>
+</div>
 
 </body>
 </html>
