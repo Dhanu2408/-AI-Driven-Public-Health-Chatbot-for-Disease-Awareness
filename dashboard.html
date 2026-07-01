@@ -1,215 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Dashboard – AI Health Chatbot</title>
-  <link rel="stylesheet" href="static/style.css">
+<meta charset="UTF-8">
+<title>Dashboard - AI Health Chatbot</title>
+<link rel="stylesheet" href="/static/css/style.css">
 </head>
-<body class="dash-page">
+<body>
 
-  <div class="sidebar">
-    <div class="sidebar-logo">🏥 AI Health Chatbot</div>
-
-    <nav>
-      <a href="/dashboard" class="nav-item active">🏠 Dashboard</a>
-      <a href="/chatbot" class="nav-item">💬 AI Chat</a>
-      <a href="#" class="nav-item">🦠 Diseases</a>
-      <a href="#" class="nav-item">💡 Health Tips</a>
-      <a href="#" class="nav-item">👤 Profile</a>
-      <a href="/login" class="nav-item">🚪 Logout</a>
-    </nav>
-  </div>
-
-  <div class="main-content">
-
-    <div class="topbar">
-      <h2>Welcome back, Dhanu 👋</h2>
-      <div class="user-info">
-        🔔 &nbsp;<span class="avatar">DH</span>
-      </div>
-    </div>
-
-    <div class="metrics-grid">
-
-      <div class="metric-card">
-        <p class="metric-label">Chats today</p>
-        <p class="metric-value">3</p>
-      </div>
-
-      <div class="metric-card">
-        <p class="metric-label">Diseases checked</p>
-        <p class="metric-value">12</p>
-      </div>
-
-      <div class="metric-card">
-        <p class="metric-label">Tips read</p>
-        <p class="metric-value">7</p>
-      </div>
-
-      <div class="metric-card">
-        <p class="metric-label">Avg. feedback</p>
-        <p class="metric-value">4.5 ⭐</p>
-      </div>
-
-    </div>
-
-    <div class="widget-row">
-
-      <div class="widget-card">
-
-        <h3>💬 AI Chat</h3>
-
-        <button class="btn-primary"
-                style="width:100%;margin-bottom:12px;"
-                onclick="window.location.href='/chatbot'">
-          + Start New Chat
-        </button>
-
-        <p class="section-label">Recent Chats</p>
-
-        <ul class="recent-list">
-          <li>What are dengue symptoms?</li>
-          <li>How to prevent malaria?</li>
-          <li>COVID-19 prevention tips</li>
-        </ul>
-
-      </div>
-
-      <div class="widget-card">
-
-        <h3>🦠 Disease Tracker</h3>
-
-        <div class="disease-row">
-          <span>Dengue</span>
-          <span class="tag warn">Moderate Risk</span>
-        </div>
-
-        <div class="disease-row">
-          <span>Malaria</span>
-          <span class="tag alert">High Alert</span>
-        </div>
-
-        <div class="disease-row">
-          <span>COVID-19</span>
-          <span class="tag safe">Low Risk</span>
-        </div>
-
-        <div class="disease-row">
-          <span>Diabetes</span>
-          <span class="tag warn">Monitor</span>
-        </div>
-
-      </div>
-
-      <div class="widget-card">
-
-        <h3>💡 Daily Health Tip</h3>
-
-        <p>
-          Drink at least 8 glasses of water daily, eat healthy food,
-          maintain proper hygiene, exercise regularly, and get enough sleep
-          to stay healthy and prevent diseases.
-        </p>
-<div class="widget-card">
-
-    <h3>📝 User Feedback Form</h3>
-
-    <form>
-
-        <label><b>Name</b></label><br>
-        <input type="text"
-               placeholder="Enter your name"
-               style="width:100%;padding:10px;margin-top:5px;margin-bottom:10px;">
-
-        <label><b>Email</b></label><br>
-        <input type="email"
-               placeholder="Enter your email"
-               style="width:100%;padding:10px;margin-top:5px;margin-bottom:10px;">
-
-        <label><b>Feedback</b></label><br>
-        <textarea
-            placeholder="Enter your feedback"
-            rows="4"
-            style="width:100%;padding:10px;margin-top:5px;margin-bottom:10px;">
-        </textarea>
-
-        <button type="submit" class="btn-primary">
-            Submit Feedback
-        </button>
-
-    </form>
-
-    <hr style="margin:20px 0;">
-
-    <h4>📋 CRUD Operations</h4>
-
-    <button class="btn-primary" style="margin:5px;">
-        Create
-    </button>
-
-    <button class="btn-primary" style="margin:5px;">
-        Read
-    </button>
-
-    <button class="btn-primary" style="margin:5px;">
-        Update
-    </button>
-
-    <button class="btn-primary" style="margin:5px;">
-        Delete
-    </button>
-    <div class="widget-card">
-
-    <h3>🔍 Search Disease</h3>
-
-    <input type="text"
-           placeholder="Search disease..."
-           style="width:100%;padding:10px;margin-bottom:15px;">
-
-    <h3>📋 Disease Information Table</h3>
-
-    <table border="1" width="100%" cellpadding="10">
-
-        <tr>
-            <th>Disease</th>
-            <th>Symptoms</th>
-            <th>Risk Level</th>
-        </tr>
-
-        <tr>
-            <td>Dengue</td>
-            <td>Fever, Headache</td>
-            <td>Moderate</td>
-        </tr>
-
-        <tr>
-            <td>Malaria</td>
-            <td>Fever, Chills</td>
-            <td>High</td>
-        </tr>
-
-        <tr>
-            <td>COVID-19</td>
-            <td>Cough, Fever</td>
-            <td>Low</td>
-        </tr>
-
-        <tr>
-            <td>Diabetes</td>
-            <td>Thirst, Fatigue</td>
-            <td>Monitor</td>
-        </tr>
-
-    </table>
-
+<div class="top-bar">
+    <div class="welcome">Welcome, {{ name }} 👋</div>
+    <a href="/logout" class="logout-btn">Logout</a>
 </div>
 
+<div class="dash-grid">
+    <a href="/chatbot" class="dash-card">
+        <h3>💬 Chat with AI</h3>
+        <p>Describe your symptoms and get instant guidance.</p>
+    </a>
+
+    <a href="#" class="dash-card">
+        <h3>📊 Disease Info</h3>
+        <p>Browse common diseases and prevention tips.</p>
+    </a>
 </div>
-      </div>
-
-    </div>
-
-  </div>
 
 </body>
 </html>
