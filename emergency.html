@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Emergency Help - AI Health Chatbot</title>
+<link rel="stylesheet" href="/static/css/style.css">
+<script>
+  (function(){
+    var theme = localStorage.getItem('healthbot-theme') || 'light';
+    document.documentElement.setAttribute('data-theme', theme);
+  })();
+</script>
+</head>
+<body>
+
+<div class="top-bar" style="max-width:750px;">
+    <div class="welcome">🚨 Emergency Help</div>
+    <a href="/dashboard" class="logout-btn">⬅️ Back</a>
+</div>
+
+<div class="section-title" style="width:100%; max-width:750px;">📞 Emergency Numbers</div>
+<div class="card" style="max-width:750px;">
+    <div class="emergency-grid">
+        {% for e in emergency_numbers %}
+        <a href="tel:{{ e.number }}" class="emergency-card">
+            <span class="icon">{{ e.icon }}</span>{{ e.label }}
+            <span class="num">{{ e.number }}</span>
+        </a>
+        {% endfor %}
+    </div>
+    <p style="color:var(--ink-soft); font-size:12.5px; text-align:center; margin-top:12px;">Tap any card to call directly (numbers shown are for India — update for your region).</p>
+</div>
+
+<div class="section-title" style="width:100%; max-width:750px;">🏥 Nearby Hospitals</div>
+<div class="card" style="max-width:750px;">
+    <p style="color:var(--ink-soft); font-size:14px; margin-bottom:14px;">Sample hospital contacts — tap a number to call directly. Update this list with hospitals in your own city.</p>
+    <div class="hospital-list">
+        {% for h in nearby_hospitals %}
+        <a href="tel:{{ h.number }}" class="hospital-item">
+            <div>
+                <p class="hospital-name">🏥 {{ h.name }}</p>
+                <p class="hospital-type">{{ h.type }}</p>
+            </div>
+            <span class="hospital-call">📞 {{ h.number }}</span>
+        </a>
+        {% endfor %}
+    </div>
+    <p style="color:var(--ink-soft); font-size:14px; margin:16px 0 10px;">Or find hospitals and clinics near your current location live on the map below.</p>
+    <div class="map-embed">
+        <iframe
+            src="https://maps.google.com/maps?q=hospitals+near+me&t=&z=13&ie=UTF8&iwloc=&output=embed"
+            width="100%" height="280" style="border:0; border-radius:12px;"
+            allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+    </div>
+    <a class="btn" href="https://www.google.com/maps/search/hospitals+near+me" target="_blank" rel="noopener" style="margin-top:14px;">📍 Open Full Map in Google Maps</a>
+</div>
+
+<div class="section-title" style="width:100%; max-width:750px;">💡 In a Medical Emergency</div>
+<div class="card" style="max-width:750px;">
+    <ul class="emergency-tips">
+        <li>Stay calm and call the ambulance (108) or the nearest hospital immediately.</li>
+        <li>Do not move a severely injured person unless there is immediate danger.</li>
+        <li>Keep the person's airway clear and monitor breathing until help arrives.</li>
+        <li>Share your exact location clearly when calling for help.</li>
+    </ul>
+</div>
+
+</body>
+</html>

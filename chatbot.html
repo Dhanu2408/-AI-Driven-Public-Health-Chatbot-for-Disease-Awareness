@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Chatbot - AI Health Chatbot</title>
+<link rel="stylesheet" href="/static/css/style.css">
+<script>
+  (function(){
+    var theme = localStorage.getItem('healthbot-theme') || 'light';
+    document.documentElement.setAttribute('data-theme', theme);
+  })();
+</script>
+</head>
+<body>
+
+<div class="top-bar" style="max-width:900px;">
+    <div class="welcome">🩺 Health Assistant</div>
+    <div class="top-actions">
+        <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">🌙</button>
+        <a href="/dashboard" class="logout-btn">⬅️ Back</a>
+    </div>
+</div>
+
+<div class="chat-layout">
+    <div class="chat-box">
+        <div class="chat-messages" id="chatMessages">
+            <div class="msg bot">👋 Hi {{ name }}! Tell me your symptoms (e.g. fever, cold, cough, headache).</div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="userInput" placeholder="Type your message...">
+            <button class="mic-btn" id="micBtn" title="Speak your symptoms">🎤</button>
+            <button onclick="sendMessage()">📤 Send</button>
+        </div>
+    </div>
+
+    <div class="chat-side">
+        <h4>🩺 I can help with</h4>
+        <div class="supported-diseases">
+            <span>Fever</span><span>Cold</span><span>Cough</span><span>Headache</span>
+            <span>Diabetes</span><span>Blood Pressure</span><span>Dengue</span><span>Malaria</span>
+            <span>Typhoid</span><span>Asthma</span><span>COVID-19</span><span>Allergy</span>
+            <span>Food Poisoning</span><span>Migraine</span>
+        </div>
+        <h4>🕒 Recent Chats</h4>
+        <input type="text" id="sideSearch" placeholder="Search history..." onkeyup="filterSide()">
+        <div class="chat-side-list" id="sideList">
+            <p style="color:var(--ink-soft); font-size:12px;">Loading...</p>
+        </div>
+        <a href="/chat-history" style="text-align:center; font-size:12.5px; color:var(--accent); font-weight:600; margin-top:8px; text-decoration:none; display:block;">View full history →</a>
+        <a href="/download-chat-pdf" style="text-align:center; font-size:12.5px; color:var(--accent); font-weight:600; margin-top:6px; text-decoration:none; display:block;">⬇️ Download as PDF</a>
+    </div>
+</div>
+
+<div class="modal-overlay" id="ratingModal">
+    <div class="modal">
+        <h4>How's this chat going?</h4>
+        <p>Your feedback helps us improve Sanjeevi.</p>
+        <div class="stars" id="stars">
+            <span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span>
+        </div>
+        <textarea id="feedbackComment" placeholder="Anything else to share? (optional)"></textarea>
+        <div class="modal-actions">
+            <button class="btn-skip" onclick="closeModal()">Skip</button>
+            <button class="btn-submit" onclick="submitRating()">Submit</button>
+        </div>
+    </div>
+</div>
+
+<script>
+let botReplyCount = 0;
+let ratingShown = false;
+
+function scrollDown(){
+    const messages = document.getElementById("chatMessages");
+    messages.scrollTop = messages.scrollHeight;
+}
+
+function showTyping(){
+    const messages = document.getElementById("chatMessages");
+    const row = document.createElement("div");
+    row.className = "msg bot typing";
+    row.id = "typingIndicator";
+    row.innerHTML = "<span></span><span></span><span></span>";
+    messages.appendChild(row);
+    scrollDown();
+}
+
+function hideTyping(){
+    const row = document.getElementById("typingIndicator");
+    if(row) row.remove();
+}
+
+function addFeedbackButtons(container, chatId){
+    const fb = document.createElement("div");
+    fb.className = "feedback-btns";
+    fb.innerHTML = `
+        <button onclick="sendFeedback(${chatId}, 'up', this)">👍</button>
+        <button onclick="sendFeedback(${chatId}, 'down', this)">👎</button>
+    `;
+    container.appendChild(fb);
+}
+
+async function sendFeedback(chatId, rating, btn){
+    const group = btn.parentElement;
+    group.querySelectorAll('button').forEach(b => b.classList.remove('picked'));
+    btn.classList.add('picked');
+    try{
+        await fetch('/feedback', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({chat_id: chatId, rating: rating})
+        });
+    }catch(e){
+        console.error('Feedback failed', e);
+    }
+}
+
+function speak(text){
+    if(!('speechSynthesis' in window)) return;
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.rate = 1;
+    utter.lang = 'en-IN';
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utter);
+}
+
+async function sendMessage() {
+    const input = document.getElementById("userInput");
+    const msg = input.value.trim();
+    if (!msg) return;
+
+    const messages = document.getElementById("chatMessages");
+
+    const userDiv = document.createElement("div");
+    userDiv.className = "msg user";
+    userDiv.textContent = msg;
+    messages.appendChild(userDiv);
+
+    input.value = "";
+    scrollDown();
+    showTyping();
+
+    try{
+        const res = await fetch("/ask", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ msg: msg })
+        });
+        const data = await res.json();
+
+        hideTyping();
+
+        const botWrap = document.createElement("div");
+        botWrap.className = "msg bot";
+        const textDiv = document.createElement("div");
+        textDiv.textContent = data.reply;
+        botWrap.appendChild(textDiv);
+        if(data.chat_id){
+            addFeedbackButtons(botWrap, data.chat_id);
+        }
+        messages.appendChild(botWrap);
+        scrollDown();
+        speak(data.reply);
+        loadSideHistory();
+
+        botReplyCount++;
+        if(botReplyCount === 3 && !ratingShown){
+            ratingShown = true;
+            setTimeout(()=> document.getElementById('ratingModal').classList.add('show'), 800);
+        }
+    }catch(e){
+        hideTyping();
+        console.error('Chat request failed', e);
+    }
+}
+
+document.getElementById("userInput").addEventListener("keypress", function(e) {
+    if (e.key === "Enter") sendMessage();
+});
+
+const micBtn = document.getElementById('micBtn');
+let recognition = null;
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+if(SpeechRecognition){
+    recognition = new SpeechRecognition();
+    recognition.lang = 'en-IN';
+    recognition.interimResults = false;
+
+    recognition.onresult = function(event){
+        const transcript = event.results[0][0].transcript;
+        document.getElementById('userInput').value = transcript;
+        sendMessage();
+    };
+    recognition.onend = function(){ micBtn.classList.remove('listening'); };
+    recognition.onerror = function(){ micBtn.classList.remove('listening'); };
+
+    micBtn.addEventListener('click', function(){
+        micBtn.classList.add('listening');
+        recognition.start();
+    });
+} else {
+    micBtn.addEventListener('click', function(){
+        alert('Voice input is not supported in this browser. Try Chrome on desktop or Android.');
+    });
+}
+
+function loadSideHistory(){
+    initSidebar();
+}
+
+function filterSide(){
+    const term = document.getElementById('sideSearch').value.toLowerCase();
+    document.querySelectorAll('.chat-side-item').forEach(item=>{
+        const text = item.textContent.toLowerCase();
+        item.style.display = text.includes(term) ? 'block' : 'none';
+    });
+}
+
+async function initSidebar(){
+    const list = document.getElementById('sideList');
+    try{
+        const res = await fetch('/chat-history');
+        const doc = new DOMParser().parseFromString(await res.text(), 'text/html');
+        const blocks = doc.querySelectorAll('.card > div[style*="border-bottom"]');
+        if(blocks.length === 0){
+            list.innerHTML = '<p style="color:var(--ink-soft); font-size:12px;">No chats yet.</p>';
+            return;
+        }
+        list.innerHTML = '';
+        blocks.forEach(b=>{
+            const item = document.createElement('div');
+            item.className = 'chat-side-item';
+            item.innerHTML = b.innerHTML.replace(/style="[^"]*"/g, '');
+            list.appendChild(item);
+        });
+    }catch(e){
+        list.innerHTML = '<p style="color:var(--ink-soft); font-size:12px;">Could not load history.</p>';
+    }
+}
+initSidebar();
+
+let selectedStars = 0;
+document.querySelectorAll('#stars span').forEach(star=>{
+    star.addEventListener('click', ()=>{
+        selectedStars = parseInt(star.dataset.v);
+        document.querySelectorAll('#stars span').forEach(s=>{
+            s.classList.toggle('on', parseInt(s.dataset.v) <= selectedStars);
+        });
+    });
+});
+function closeModal(){
+    document.getElementById('ratingModal').classList.remove('show');
+}
+async function submitRating(){
+    if(selectedStars === 0){ closeModal(); return; }
+    const comment = document.getElementById('feedbackComment').value;
+    try{
+        await fetch('/feedback', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({rating: selectedStars, comment: comment})
+        });
+    }catch(e){
+        console.error('Rating submit failed', e);
+    }
+    closeModal();
+}
+
+const themeToggle = document.getElementById('themeToggle');
+(function(){
+    const saved = localStorage.getItem('healthbot-theme') || 'light';
+    themeToggle.textContent = saved === 'dark' ? '☀️' : '🌙';
+})();
+themeToggle.addEventListener('click', function(){
+    const root = document.documentElement;
+    const current = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    const next = current === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    localStorage.setItem('healthbot-theme', next);
+    themeToggle.textContent = next === 'dark' ? '☀️' : '🌙';
+});
+</script>
+
+</body>
+</html>
