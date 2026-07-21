@@ -336,7 +336,7 @@ With its secure architecture, user-friendly interface, and intelligent response 
 
 # **AUTHOR**
 
-**DHANUSHIYA**
+**DHANUSHIYA** S
 
 **Department of Artificial Intelligence and Machine Learning (AI & ML)**
 
